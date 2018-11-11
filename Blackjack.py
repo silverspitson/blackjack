@@ -44,7 +44,7 @@ def kaart():
 def käe_summa(käsi):
     summa = 0
     for i in range(len(käsi)):
-        väärtus = väärtused[käsi[0]]
+        väärtus = väärtused[käsi[i]]
         summa += väärtus
     return summa
 
@@ -57,7 +57,7 @@ genereeritud = [] #juba võetud kaartide numbrid
 mSumma = 0
 dSumma = 0
 
-#algusfaas
+#/algusfaas
 card = kaart()
 mKaardid.append(card)
 card = kaart()
@@ -69,7 +69,7 @@ dKaardid.append(card)
 
 mSumma = käe_summa(mKaardid)
 dSumma = käe_summa(dKaardid)
-#algusfaas
+#/algusfaas
 
 #testimiseks laused prg
 print(mKaardid)
