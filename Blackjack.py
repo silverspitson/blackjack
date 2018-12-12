@@ -4,6 +4,7 @@
 
 #from pygame import *
 from random import randint
+from easygui import *
 
 def ekraan():
     #jamasin natuke ekraani tekitamisega pygame abil; sittagi ei saa aru pmst
@@ -82,8 +83,8 @@ def algus():
     dSumma += väärtus(card, "D")
     dKaardid.append(card)
 
-    print("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: " + str(mKaardid))
-    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
+#    msgbox(("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: " + str(mKaardid))+"\n"+"Diileri kaartide summa on: " + str(dSumma_üksik) +"\n"+"Diileri kaardid: " + str(dKaardid[0]), "algseis")
+#    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
 #kui mängija tahab kaarti juurde saada
 def hit():
     global mSumma
@@ -94,46 +95,46 @@ def hit():
     card  = kaart()
     mKaardid.append(card)
     mSumma += väärtus(card, "M")
-    print("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: "+str(mKaardid))
-    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
+#    print("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: "+str(mKaardid))
+#    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
 
     if mSumma == 21:
-        print("Said blackjacki! Oled võitnud!")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said blackjacki! Oled võitnud!", "Tulemus")
         jätk()
     if mSumma > 21:
-        print("Läksid lõhki. Kaotasid mängu.")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Läksid lõhki. Kaotasid mängu.", "Tulemus")
         jätk()
 #kui mängija ei taha kaarti juurde
 def stand():
     global dSumma
     global dKaardid
     global mSumma
-    print("Diileri kaartide summa: " + str(dSumma) + ". Diileri kaardid: " + str(dKaardid))
+    msgbox(("Diileri kaartide summa: " + str(dSumma) + ". Diileri kaardid: " + str(dKaardid)), "Vahetulemus")
     #diiler võtab kaarte kuni ta käe summa on vähemalt 17
     while dSumma<17:
         card = kaart()
         dSumma += väärtus(card, "D")
         dKaardid.append(card)
-        print("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid))
+        msgbox(("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)), "Tulemus")
 
     #võidu ja kaotamise tingimused
     if dSumma == 21:
-        print("Diiler sai blackjacki. Kaotasid mängu.")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler sai blackjacki. Kaotasid mängu.", "Tulemus")
     if dSumma > 21:
-        print("Diiler läks lõhki. Võitsid mängu!")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler läks lõhki. Võitsid mängu!", "Tulemus")
     if dSumma < 21:
         if dSumma < mSumma:
-            print("Sinu käsi on diileri omast parem. Võitsid mängu!")
+            msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Sinu käsi on diileri omast parem. Võitsid mängu!", "Tulemus")
         if dSumma > mSumma:
-            print("Diileri käsi on sinu omast parem. Kaotasid mängu.")
+            msgbox(("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Diileri käsi on sinu omast parem. Kaotasid mängu."), "Tulemus")
         if dSumma == mSumma:
-            print("Jäid viiki")
+            msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Jäid viiki", "Tulemus")
     jätk()
 
 #ksib peale mängu lõppu, kas mängija tahab uut mängu või mitte
 def jätk():
     global running
-    vastus = input("Tahad edasi mängida? Jah või ei: ")
+    vastus = buttonbox("Tahad edasi mängida?", "Uus mäng?", ["Jah", "Ei"])
     if vastus.lower().strip() == "jah":
         running = False
     if vastus.lower().strip() == "ei":
@@ -159,15 +160,15 @@ while True:
     algus()
 
     if mSumma == 21:
-        print("Said naturaalse blackjacki, oled võitnud!")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said naturaalse blackjacki, oled võitnud!", "Tulemus")
         jätk()
     if dSumma == 21:
-        print("Diiler sai naturaalse blackjacki, oled kaotanud.")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+ "Diiler sai naturaalse blackjacki, oled kaotanud.", "Tulemus")
         jätk()
 
     #kui mäng niiöelda käib
     while running:
-        vastus = input("Mida tahad edasi teha? hit või stand: ")
+        vastus = buttonbox(("Diileri kaartide summa: "+str(dSumma)+ ".\n"+"Diileri kaardid: "+str(dKaardid) +"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: " + str(mKaardid)+"\n"+ "Mida tahad edasi teha? hit või stand: "), "Valik", ["Hit", "Stand"])
         if vastus.lower().strip() == "hit":
             hit()
         if vastus.lower().strip() == "stand":
