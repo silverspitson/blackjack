@@ -5,22 +5,24 @@
 #from pygame import *
 from random import randint
 from easygui import *
-
-def ekraan():
-    #jamasin natuke ekraani tekitamisega pygame abil; sittagi ei saa aru pmst
-#    display.init()
-    display.set_mode((1000,600))
+#def ekraan():
+#    #jamasin natuke ekraani tekitamisega pygame abil; sittagi ei saa aru pmst
+##    display.init()
+#    display.set_mode((1200,600))
     
-    pilt = image.load("download.bmp")
-#    pilt = pilt.convert()
-    pilt = image.tostring(pilt, "RGBX")
-    image.fromstring(pilt, (100,100), "RGBX")
+#    pilt = image.load("download.bmp")
+##    pilt = pilt.convert()
+#    pilt = image.tostring(pilt, "RGBX")
+#    image.fromstring(pilt, (100,100), "RGBX")
 
 #    font.init()
 #    #print(font.get_fonts())
 #    Font = font.SysFont("arial", 15)
 #    tekst = font.Font(Font, 15)
 #    font.Font.render(tekst)
+
+rahakott = 10000
+
 
 def generator(): #genereerib random numbri vahemikus 0-51(kaardi indeksid listis)
     kaardiNr = randint(0, 51)
@@ -68,6 +70,14 @@ def algus():
     global mSumma
     global dSumma
     global dSumma_üksik
+    global panus
+    global rahakott
+    if rahakott <= 0:
+        msgbox("Sul on rahad otsas, mine koju!", "Warning")
+        exit()
+    
+    panus = int(enterbox("Rahakott: "+ str(rahakott)+"\n"+"Sisestage oma panus:"))
+    rahakott -= panus
     card = kaart()
     mSumma += väärtus(card, "M")
     mKaardid.append(card)
@@ -91,7 +101,8 @@ def hit():
     global mKaardid
     global dSumma_üksik
     global dKaardid
-
+    global panus
+    global rahakott
     card  = kaart()
     mKaardid.append(card)
     mSumma += väärtus(card, "M")
@@ -99,16 +110,19 @@ def hit():
 #    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
 
     if mSumma == 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said blackjacki! Oled võitnud!", "Tulemus")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said blackjacki! Oled võitnud!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
+        rahakott += 2*panus
         jätk()
     if mSumma > 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Läksid lõhki. Kaotasid mängu.", "Tulemus")
+        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Läksid lõhki. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus), "Tulemus")
         jätk()
 #kui mängija ei taha kaarti juurde
 def stand():
     global dSumma
     global dKaardid
     global mSumma
+    global panus
+    global rahakott
     msgbox(("Diileri kaartide summa: " + str(dSumma) + ". Diileri kaardid: " + str(dKaardid)), "Vahetulemus")
     #diiler võtab kaarte kuni ta käe summa on vähemalt 17
     while dSumma<17:
@@ -119,16 +133,19 @@ def stand():
 
     #võidu ja kaotamise tingimused
     if dSumma == 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler sai blackjacki. Kaotasid mängu.", "Tulemus")
+        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler sai blackjacki. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus), "Tulemus")
     if dSumma > 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler läks lõhki. Võitsid mängu!", "Tulemus")
+        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler läks lõhki. Võitsid mängu!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
+        rahakott += 2*panus
     if dSumma < 21:
         if dSumma < mSumma:
-            msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Sinu käsi on diileri omast parem. Võitsid mängu!", "Tulemus")
+            msgbox("Rahakott: "+str(rahakott)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Sinu käsi on diileri omast parem. Võitsid mängu!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
+            rahakott += 2*panus
         if dSumma > mSumma:
-            msgbox(("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Diileri käsi on sinu omast parem. Kaotasid mängu."), "Tulemus")
+            msgbox(("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Diileri käsi on sinu omast parem. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus)), "Tulemus")
         if dSumma == mSumma:
-            msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Jäid viiki", "Tulemus")
+            msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Jäid viiki"+"\n"+"Sinu võit: " +str(panus), "Tulemus")
+            rahakott += panus
     jätk()
 
 #ksib peale mängu lõppu, kas mängija tahab uut mängu või mitte
@@ -160,10 +177,11 @@ while True:
     algus()
 
     if mSumma == 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said naturaalse blackjacki, oled võitnud!", "Tulemus")
+        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said naturaalse blackjacki, oled võitnud!"+"\n"+"Sinu panus: "+str(panus)+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
+        rahakott += 2*panus
         jätk()
     if dSumma == 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+ "Diiler sai naturaalse blackjacki, oled kaotanud.", "Tulemus")
+        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+ "Diiler sai naturaalse blackjacki, oled kaotanud.", "Tulemus")
         jätk()
 
     #kui mäng niiöelda käib
@@ -173,3 +191,5 @@ while True:
             hit()
         if vastus.lower().strip() == "stand":
             stand()
+            
+
