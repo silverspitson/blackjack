@@ -1,28 +1,86 @@
-#TODO
-#Pygame või muu GUI sisse tuua, vb tkinter parem
-#Bettimine teha
 
-#from pygame import *
 from random import randint
-from easygui import *
-#def ekraan():
-#    #jamasin natuke ekraani tekitamisega pygame abil; sittagi ei saa aru pmst
-##    display.init()
-#    display.set_mode((1200,600))
-    
-#    pilt = image.load("download.bmp")
-##    pilt = pilt.convert()
-#    pilt = image.tostring(pilt, "RGBX")
-#    image.fromstring(pilt, (100,100), "RGBX")
+from tkinter import *
+import time
 
-#    font.init()
-#    #print(font.get_fonts())
-#    Font = font.SysFont("arial", 15)
-#    tekst = font.Font(Font, 15)
-#    font.Font.render(tekst)
+class GUI:
+    def __init__(self, master):
+        frame_master = Frame(master)
+        frame_master.pack(expand=YES,side=TOP,anchor=CENTER)
 
-rahakott = 10000
+        self.mängija = Label(frame_master,text="MÄNGIJA")
+        self.mängija.grid(row=0,columnspan=2)
+        self.diiler = Label(frame_master, text="DIILER")
+        self.diiler.grid(row=5,columnspan=2)
 
+        self.kaardid_d = Label(frame_master, text="Diileri kaardid: ")
+        self.kaardid_d.grid(row=6,sticky=W,columnspan=2)
+        self.summa_d = Label(frame_master, text="Diileri kaartide summa: ")
+        self.summa_d.grid(row=7,sticky=W,columnspan=2)
+        self.kaardid_m = Label(frame_master, text="Mängija kaardid: ")
+        self.kaardid_m.grid(row=1,sticky=W,columnspan=2)
+        self.summa_m = Label(frame_master, text="Mängija kaartide summa: ")
+        self.summa_m.grid(row=2,sticky=W,columnspan=2)
+        self.raha = Label(frame_master, text="Praegune raha: "+str(rahakott))
+        self.raha.grid(row=3,sticky=W,columnspan=2)
+
+        self.teade = Label(frame_master,text="")
+        self.teade.grid(row=8,column=0, columnspan=2)
+        self.nupp_hit = Button(frame_master,text="Hit",command=self.cmd1)
+        self.nupp_hit.grid(row=9,column=0)
+        self.nupp_stand = Button(frame_master,text="Stand",command=self.cmd2)
+        self.nupp_stand.grid(row=9,column=1)
+        self.nupp_bet = Button(frame_master,text="Panusta",command=self.cmd3)
+        self.nupp_bet.grid(row=10,column=0)
+        self.e = Entry(frame_master)
+        self.e.grid(row=10,column=1)
+
+    def cmd1(self):
+        hit()
+    def cmd2(self):
+        stand()
+    def cmd3(self):
+        global bet_made
+        global panus
+        panus = graafika.e.get()
+        if panus == "" or panus == " ":
+            panus = 0
+        panus = int(panus)
+        graafika.e.delete(0, END)
+        bet_made = True
+        print("a"+str(panus)+"a")
+    def uus_aken(self):
+        global aken
+        aken = Toplevel(root)
+        self.tekst = Label(aken, text="Kas tahad alustada uut mängu?")
+        self.tekst.grid(columnspan=2)
+        self.yes = Button(aken,text="Jah",command=self.jah)
+        self.yes.grid(row=1)
+        self.no = Button(aken,text="Ei",command=self.ei)
+        self.no.grid(row=1,column=1)
+    def raha_otsas(self):
+        aken_exit = Toplevel(root)
+        self.tekst = Label(aken_exit,text="Sul on raha otsas, mine koju")
+        self.tekst.pack()
+        time.sleep(5)
+        root.destroy()
+        exit()
+    def jah(self):
+        global running
+        global aken
+        running = False
+        aken.destroy()
+    def ei(self):
+        root.destroy()
+        exit()
+
+
+def GUI_update():
+    graafika.kaardid_d.config(text="Diileri kaardid: " + str(dKaardid))
+    graafika.summa_d.config(text="Diileri kaartide summa: " + str(dSumma))
+    graafika.kaardid_m.config(text="Mängija kaardid: " + str(mKaardid))
+    graafika.summa_m.config(text="Mängija kaartide summa: " + str(mSumma))
+    graafika.raha.config(text="Praegune raha: "+str(rahakott))
 
 def generator(): #genereerib random numbri vahemikus 0-51(kaardi indeksid listis)
     kaardiNr = randint(0, 51)
@@ -30,7 +88,7 @@ def generator(): #genereerib random numbri vahemikus 0-51(kaardi indeksid listis
 
 #kontrollib, kas kaart on juba võetud(genereeritud) või mitte
 def checker(nr):
-#    global genereeritud
+    global genereeritud
     if nr in genereeritud:
         return True
     return False
@@ -73,11 +131,9 @@ def algus():
     global panus
     global rahakott
     if rahakott <= 0:
-        msgbox("Sul on rahad otsas, mine koju!", "Warning")
-        exit()
+       graafika.raha_otsas()
     
-    panus = int(enterbox("Rahakott: "+ str(rahakott)+"\n"+"Sisestage oma panus:"))
-    rahakott -= panus
+    #panus = int(enterbox("Rahakott: "+ str(rahakott)+"\n"+"Sisestage oma panus:"))
     card = kaart()
     mSumma += väärtus(card, "M")
     mKaardid.append(card)
@@ -93,8 +149,6 @@ def algus():
     dSumma += väärtus(card, "D")
     dKaardid.append(card)
 
-#    msgbox(("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: " + str(mKaardid))+"\n"+"Diileri kaartide summa on: " + str(dSumma_üksik) +"\n"+"Diileri kaardid: " + str(dKaardid[0]), "algseis")
-#    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
 #kui mängija tahab kaarti juurde saada
 def hit():
     global mSumma
@@ -106,16 +160,19 @@ def hit():
     card  = kaart()
     mKaardid.append(card)
     mSumma += väärtus(card, "M")
-#    print("Mängija kaartide summa on: " + str(mSumma) + ". Mängija kaardid: "+str(mKaardid))
-#    print("Diileri kaartide summa on: " + str(dSumma_üksik) + ". Diileri kaardid: " + str(dKaardid[0]))
 
     if mSumma == 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said blackjacki! Oled võitnud!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
-        rahakott += 2*panus
+        rahakott += 2 * panus
+        GUI_update()
+        graafika.teade.config(text="Said blackjacki! Oled võitnud!")
         jätk()
+
     if mSumma > 21:
-        msgbox("Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Läksid lõhki. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus), "Tulemus")
+        rahakott -= panus
+        GUI_update()
+        graafika.teade.config(text="Läksid lõhki. Kaotasid mängu.")
         jätk()
+
 #kui mängija ei taha kaarti juurde
 def stand():
     global dSumma
@@ -123,39 +180,41 @@ def stand():
     global mSumma
     global panus
     global rahakott
-    msgbox(("Diileri kaartide summa: " + str(dSumma) + ". Diileri kaardid: " + str(dKaardid)), "Vahetulemus")
+    GUI_update()
+
     #diiler võtab kaarte kuni ta käe summa on vähemalt 17
     while dSumma<17:
         card = kaart()
         dSumma += väärtus(card, "D")
         dKaardid.append(card)
-        msgbox(("Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)), "Tulemus")
+        GUI_update()
 
     #võidu ja kaotamise tingimused
     if dSumma == 21:
-        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler sai blackjacki. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus), "Tulemus")
+        rahakott -= panus
+        GUI_update()
+        graafika.teade.config(text="Diiler sai blackjacki. Kaotasid mängu.")
     if dSumma > 21:
-        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Diiler läks lõhki. Võitsid mängu!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
-        rahakott += 2*panus
+        rahakott += 2 * panus
+        GUI_update()
+        graafika.teade.config(text="Diiler läks lõhki. Võitsid mängu!")
     if dSumma < 21:
         if dSumma < mSumma:
-            msgbox("Rahakott: "+str(rahakott)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Sinu käsi on diileri omast parem. Võitsid mängu!"+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
-            rahakott += 2*panus
+            rahakott += 2 * panus
+            GUI_update()
+            graafika.teade.config(text="Sinu käsi on diileri omast parem. Võitsid mängu!")
         if dSumma > mSumma:
-            msgbox(("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: "+str(mKaardid)+"\n"+"Diileri käsi on sinu omast parem. Kaotasid mängu."+"\n"+"Sinu kaotus: "+str(-panus)), "Tulemus")
+            rahakott -= panus
+            GUI_update()
+            graafika.teade.config(text="Diileri käsi on sinu omast parem. Kaotasid mängu.")
         if dSumma == mSumma:
-            msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+".\n"+"Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Jäid viiki"+"\n"+"Sinu võit: " +str(panus), "Tulemus")
-            rahakott += panus
+            GUI_update()
+            graafika.teade.config(text="Jäid viiki")
     jätk()
 
-#ksib peale mängu lõppu, kas mängija tahab uut mängu või mitte
+#küsib peale mängu lõppu, kas mängija tahab uut mängu või mitte
 def jätk():
-    global running
-    vastus = buttonbox("Tahad edasi mängida?", "Uus mäng?", ["Jah", "Ei"])
-    if vastus.lower().strip() == "jah":
-        running = False
-    if vastus.lower().strip() == "ei":
-        exit()
+    graafika.uus_aken()
 
 #algsed listid
 kaardid = ["Poti 2","Ärtu 2","Risti 2","Ruutu 2","Poti 3","Ärtu 3","Risti 3","Ruutu 3","Poti 4","Ärtu 4","Risti 4","Ruutu 4","Poti 5","Ärtu 5","Risti 5","Ruutu 5","Poti 6","Ärtu 6","Risti 6","Ruutu 6","Poti 7","Ärtu 7","Risti 7","Ruutu 7","Poti 8","Ärtu 8","Risti 8","Ruutu 8","Poti 9","Ärtu 9","Risti 9","Ruutu 9","Poti 10","Ärtu 10","Risti 10","Ruutu 10","Poti poiss","Ärtu poiss","Risti poiss","Ruutu poiss","Poti emand","Ärtu emand","Risti emand","Ruutu emand","Poti kuningas","Ärtu kuningas","Risti kuningas","Ruutu kuningas","Poti äss","Ärtu äss","Risti äss","Ruutu äss"]
@@ -164,32 +223,56 @@ mKaardid = [] #mängija kaardid
 dKaardid = [] #diileri kaardid
 kaardiNr = []
 genereeritud = [] #juba võetud kaartide numbrid
+panus = 0
+rahakott = 10000
+
+root = Tk()
+root.geometry("600x300")
+root.title("Blackjack")
+graafika = GUI(root)
 
 #kogu mängu tsükkel, jookseb kuni programm töötab
 while True:
+
     #enne mängu algust tehtav faas(algfaas)
     running = True
+    bet_made = False
     dSumma = 0
     mSumma = 0
     dSumma_üksik = 0
     dKaardid.clear()
     mKaardid.clear()
+
+    graafika.kaardid_d.config(text="Diileri kaardid: " )
+    graafika.summa_d.config(text="Diileri kaartide summa: ")
+    graafika.kaardid_m.config(text="Mängija kaardid: " )
+    graafika.summa_m.config(text="Mängija kaartide summa: ")
+    graafika.teade.config(text="")
+
     algus()
+    while bet_made == False:
+        root.update_idletasks()
+        root.update()
+        continue
+
+    graafika.kaardid_d.config(text="Diileri kaardid: " + str(dKaardid[0]))
+    graafika.summa_d.config(text="Diileri kaartide summa: " + str(dSumma_üksik))
 
     if mSumma == 21:
-        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+("Mängija kaartide summa on: " + str(mSumma) +".\n" "Mängija kaardid: "+str(mKaardid))+"\n"+"Said naturaalse blackjacki, oled võitnud!"+"\n"+"Sinu panus: "+str(panus)+"\n"+"Sinu võit: " +str(2*panus), "Tulemus")
-        rahakott += 2*panus
+        rahakott += 2 * panus
+        GUI_update()
+        graafika.teade.config(text="Said naturaalse blackjacki, oled võitnud!")
         jätk()
     if dSumma == 21:
-        msgbox("Rahakott: "+str(rahakott)+"\n"+"Panus: "+str(panus)+"\n"+"Diileri kaartide summa: "+str(dSumma)+". Diileri kaardid: "+str(dKaardid)+"\n"+ "Diiler sai naturaalse blackjacki, oled kaotanud.", "Tulemus")
+        rahakott -= panus
+        GUI_update()
+        graafika.teade.config(text="Diiler sai naturaalse blackjacki, oled kaotanud.")
         jätk()
 
     #kui mäng niiöelda käib
     while running:
-        vastus = buttonbox(("Diileri kaartide summa: "+str(dSumma)+ ".\n"+"Diileri kaardid: "+str(dKaardid) +"\n"+"Mängija kaartide summa on: " + str(mSumma) +".\n"+ "Mängija kaardid: " + str(mKaardid)+"\n"+ "Mida tahad edasi teha? hit või stand: "), "Valik", ["Hit", "Stand"])
-        if vastus.lower().strip() == "hit":
-            hit()
-        if vastus.lower().strip() == "stand":
-            stand()
-            
+        root.update_idletasks()
+        root.update()
 
+        graafika.kaardid_m.config(text="Mängija kaardid: " + str(mKaardid))
+        graafika.summa_m.config(text="Mängija kaartide summa: " + str(mSumma))
