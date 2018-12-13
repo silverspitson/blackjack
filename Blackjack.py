@@ -23,6 +23,8 @@ class GUI:
         self.summa_m.grid(row=2,sticky=W,columnspan=2)
         self.raha = Label(frame_master, text="Praegune raha: "+str(rahakott),font=("Bahnschrift",12),bg="#acff7c")
         self.raha.grid(row=3,sticky=W,columnspan=2)
+        self.panus = Label(frame_master, text="Panus: "+str(panus),font=("Bahnschrift",12),bg="#acff7c")
+        self.panus.grid(row=4,sticky=W,columnspan=2)
 
         self.teade = Label(frame_master,text="",font=("Bahnschrift",12),bg="#acff7c")
         self.teade.grid(row=8,column=0, columnspan=2)
@@ -34,7 +36,7 @@ class GUI:
         self.nupp_bet.grid(row=10,column=0,sticky=W+E)
         self.e = Entry(frame_master)
         self.e.grid(row=10,column=1,sticky=W+E)
-
+        
         #infobox
         global readme
         readme = Toplevel(root)
@@ -81,8 +83,10 @@ class GUI:
     def jah(self):
         global running
         global aken
+        global panus
         running = False
         aken.destroy()
+        panus = 0
     def ei(self):
         root.destroy()
         exit()
@@ -294,3 +298,5 @@ while True:
 
         graafika.kaardid_m.config(text="Mängija kaardid: " + str(mKaardid))
         graafika.summa_m.config(text="Mängija kaartide summa: " + str(mSumma))
+        graafika.panus.config(text="Panus: "+str(panus))
+        graafika.raha.config(text="Praegune raha: "+str(rahakott-panus))
