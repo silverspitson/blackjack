@@ -1,70 +1,83 @@
-
 from random import randint
 from tkinter import *
 import time
 
+#Kogu graafiline liides
 class GUI:
     def __init__(self, master):
-        frame_master = Frame(master)
-        frame_master.pack(expand=YES,side=TOP,anchor=CENTER)
+        frame_master = Frame(master,bg="#acff7c")
+        frame_master.pack(fill="both",side=TOP,anchor=CENTER, expand=YES)
 
-        self.mängija = Label(frame_master,text="MÄNGIJA")
+        self.mängija = Label(frame_master,text="MÄNGIJA",font=("Bahnschrift",24),bg="#acff7c")
         self.mängija.grid(row=0,columnspan=2)
-        self.diiler = Label(frame_master, text="DIILER")
+        self.diiler = Label(frame_master, text="DIILER",font=("Bahnschrift",24),bg="#acff7c")
         self.diiler.grid(row=5,columnspan=2)
 
-        self.kaardid_d = Label(frame_master, text="Diileri kaardid: ")
+        self.kaardid_d = Label(frame_master, text="Diileri kaardid: ",font=("Bahnschrift",12),bg="#acff7c")
         self.kaardid_d.grid(row=6,sticky=W,columnspan=2)
-        self.summa_d = Label(frame_master, text="Diileri kaartide summa: ")
+        self.summa_d = Label(frame_master, text="Diileri kaartide summa: ",font=("Bahnschrift",12),bg="#acff7c")
         self.summa_d.grid(row=7,sticky=W,columnspan=2)
-        self.kaardid_m = Label(frame_master, text="Mängija kaardid: ")
+        self.kaardid_m = Label(frame_master, text="Mängija kaardid: ",font=("Bahnschrift",12),bg="#acff7c")
         self.kaardid_m.grid(row=1,sticky=W,columnspan=2)
-        self.summa_m = Label(frame_master, text="Mängija kaartide summa: ")
+        self.summa_m = Label(frame_master, text="Mängija kaartide summa: ",font=("Bahnschrift",12),bg="#acff7c")
         self.summa_m.grid(row=2,sticky=W,columnspan=2)
-        self.raha = Label(frame_master, text="Praegune raha: "+str(rahakott))
+        self.raha = Label(frame_master, text="Praegune raha: "+str(rahakott),font=("Bahnschrift",12),bg="#acff7c")
         self.raha.grid(row=3,sticky=W,columnspan=2)
 
-        self.teade = Label(frame_master,text="")
+        self.teade = Label(frame_master,text="",font=("Bahnschrift",12),bg="#acff7c")
         self.teade.grid(row=8,column=0, columnspan=2)
-        self.nupp_hit = Button(frame_master,text="Hit",command=self.cmd1)
-        self.nupp_hit.grid(row=9,column=0)
-        self.nupp_stand = Button(frame_master,text="Stand",command=self.cmd2)
-        self.nupp_stand.grid(row=9,column=1)
-        self.nupp_bet = Button(frame_master,text="Panusta",command=self.cmd3)
-        self.nupp_bet.grid(row=10,column=0)
+        self.nupp_hit = Button(frame_master,text="Hit",command=self.cmd1,font=("Bahnschrift"),bg="#fcba20",padx=100)
+        self.nupp_hit.grid(row=9,column=0,sticky=W+E)
+        self.nupp_stand = Button(frame_master,text="Stand",command=self.cmd2,font=("Bahnschrift"),bg="#fcba20",padx=100)
+        self.nupp_stand.grid(row=9,column=1,sticky=W+E)
+        self.nupp_bet = Button(frame_master,text="Panusta",command=self.cmd3,font=("Bahnschrift"),bg="#fcba20")
+        self.nupp_bet.grid(row=10,column=0,sticky=W+E)
         self.e = Entry(frame_master)
-        self.e.grid(row=10,column=1)
+        self.e.grid(row=10,column=1,sticky=W+E)
 
-    def cmd1(self):
+        #infobox
+        global readme
+        readme = Toplevel(root)
+        readme.title("Info")
+        readme.geometry("500x115")
+        self.tekst = Label(readme,text="Mõned märkused reeglite ja mängu kohta:\n"
+                                       "Diiler võtab kaarte seni, kuni ta käe väärtus on vähemalt 17\n"
+                                       "Enne mängu algust, pead panustama ehk vajutama nuppu \"Panusta\"\n"
+                                       "Panuse võitmisel saad selle kahekordselt tagasi",font=("Bahnschrift"))
+        self.tekst.grid()
+        self.nupp = Button(readme,text="Ok",command=self.ok,font=("Bahnschrift"))
+        self.nupp.grid()
+
+    def cmd1(self): #hit
+        if bet_made == False:
+            return
         hit()
-    def cmd2(self):
+    def cmd2(self): #stand
+        if bet_made == False:
+            return
         stand()
-    def cmd3(self):
+    def cmd3(self): #panustamine
         global bet_made
         global panus
-        panus = graafika.e.get()
-        if panus == "" or panus == " ":
-            panus = 0
-        panus = int(panus)
+        global rahakott
+        try:
+            panus = int(graafika.e.get())
+        except:
+            return
+        if panus <= 0 or panus > rahakott:
+            return
         graafika.e.delete(0, END)
         bet_made = True
-        print("a"+str(panus)+"a")
-    def uus_aken(self):
+    def uus_aken(self): #Peale mängu jätkamise küsimus
         global aken
         aken = Toplevel(root)
-        self.tekst = Label(aken, text="Kas tahad alustada uut mängu?")
+        self.tekst = Label(aken, text="Kas tahad alustada uut mängu?",font=("Bahnschrift"))
         self.tekst.grid(columnspan=2)
-        self.yes = Button(aken,text="Jah",command=self.jah)
+        self.yes = Button(aken,text="Jah",command=self.jah,font=("Bahnschrift"))
         self.yes.grid(row=1)
-        self.no = Button(aken,text="Ei",command=self.ei)
+        self.no = Button(aken,text="Ei",command=self.ei,font=("Bahnschrift"))
         self.no.grid(row=1,column=1)
-    def raha_otsas(self):
-        aken_exit = Toplevel(root)
-        self.tekst = Label(aken_exit,text="Sul on raha otsas, mine koju")
-        self.tekst.pack()
-        time.sleep(5)
-        root.destroy()
-        exit()
+
     def jah(self):
         global running
         global aken
@@ -73,8 +86,11 @@ class GUI:
     def ei(self):
         root.destroy()
         exit()
+    def ok(self):
+        global readme
+        readme.destroy()
 
-
+#uuendab kõiki tekste graafilisel liidesel uute andmetega
 def GUI_update():
     graafika.kaardid_d.config(text="Diileri kaardid: " + str(dKaardid))
     graafika.summa_d.config(text="Diileri kaartide summa: " + str(dSumma))
@@ -131,9 +147,8 @@ def algus():
     global panus
     global rahakott
     if rahakott <= 0:
-       graafika.raha_otsas()
-    
-    #panus = int(enterbox("Rahakott: "+ str(rahakott)+"\n"+"Sisestage oma panus:"))
+        graafika.teade.config(text="Sul sai raha otsa, mine koju")
+
     card = kaart()
     mSumma += väärtus(card, "M")
     mKaardid.append(card)
@@ -162,7 +177,7 @@ def hit():
     mSumma += väärtus(card, "M")
 
     if mSumma == 21:
-        rahakott += 2 * panus
+        rahakott += panus
         GUI_update()
         graafika.teade.config(text="Said blackjacki! Oled võitnud!")
         jätk()
@@ -195,12 +210,12 @@ def stand():
         GUI_update()
         graafika.teade.config(text="Diiler sai blackjacki. Kaotasid mängu.")
     if dSumma > 21:
-        rahakott += 2 * panus
+        rahakott += panus
         GUI_update()
         graafika.teade.config(text="Diiler läks lõhki. Võitsid mängu!")
     if dSumma < 21:
         if dSumma < mSumma:
-            rahakott += 2 * panus
+            rahakott += panus
             GUI_update()
             graafika.teade.config(text="Sinu käsi on diileri omast parem. Võitsid mängu!")
         if dSumma > mSumma:
@@ -224,10 +239,11 @@ dKaardid = [] #diileri kaardid
 kaardiNr = []
 genereeritud = [] #juba võetud kaartide numbrid
 panus = 0
-rahakott = 10000
+rahakott = 1000
 
+#GUI initializing faas
 root = Tk()
-root.geometry("600x300")
+root.geometry("600x310")
 root.title("Blackjack")
 graafika = GUI(root)
 
@@ -250,16 +266,18 @@ while True:
     graafika.teade.config(text="")
 
     algus()
+    #kuni pole panustatud, ei lähe edasi(ehk ei näita kaarte ega käe summasid)
     while bet_made == False:
         root.update_idletasks()
         root.update()
         continue
 
+    #paneb ekraanile diileri ühe avaliku kaardi ja selle väärtuse
     graafika.kaardid_d.config(text="Diileri kaardid: " + str(dKaardid[0]))
     graafika.summa_d.config(text="Diileri kaartide summa: " + str(dSumma_üksik))
 
     if mSumma == 21:
-        rahakott += 2 * panus
+        rahakott += panus
         GUI_update()
         graafika.teade.config(text="Said naturaalse blackjacki, oled võitnud!")
         jätk()
