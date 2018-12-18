@@ -247,7 +247,7 @@ rahakott = 1000
 
 #GUI initializing faas
 root = Tk()
-root.geometry("600x310")
+root.geometry("600x330")
 root.title("Blackjack")
 graafika = GUI(root)
 
